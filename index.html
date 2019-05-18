@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Postcode search</title>
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+  <div class="wrap">
+    <div class="container">
+      <div id="postcode_search">
+        <div class="app-inner">
+          <label for="postcode_search_text">Postcode Search</label>
+          <div class="search-bar">
+            <input @keyup="enterListener" type="text" id="postcode_search_text" v-model="postcode" placeholder="edit me" />
+            <button @click="search">Go</button>
+          </div>
+        </div>
+        <the-location :location=location></the-location>
+      </div>
+    </div>
+  </div>
+
+  <!-- These scripts should be combined using a build tool -->
+  <!-- <script src="js/vue.js"></script> -->
+  <script src="js/vue.min.js"></script>
+  <script src="js/distance.js"></script>
+  <script src="js/postcode_search.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfT0hG2Z1Rx_4i9gid19TjFqDONTBh79Y&callback=initMap" async defer></script>
+</body>
+
+</html>

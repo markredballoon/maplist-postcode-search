@@ -1,0 +1,55 @@
+:root {
+  box-sizing: border-box;
+}
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+}
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  padding: .5vw;
+}
+.container {
+  margin: 100px auto;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* App elements */
+
+.app-inner {
+  padding: 10px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  max-width: 100%;
+}
+.app-inner label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.search-bar {
+  display: flex;
+}
+.search-bar input[type=text] {
+  flex: 1 1 auto;
+  margin-right: 12px;
+}
+
+/* Results */
+
+.location {
+  margin-top: 20px;
+  padding: 10px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  font-size: 90%;
+}
+.location_title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
