@@ -175,7 +175,7 @@ const app = new Vue({
       }
 
       // Sort the stores by distance
-      const local_stores_sorted = local_stores.sort();
+      const local_stores_sorted = local_stores.sort(distanceSort);
 
       // Get the first item from the array
       this.location = local_stores_sorted.shift();
