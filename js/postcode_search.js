@@ -1,21 +1,54 @@
-// Stores the locations
 const MAX_RANGE = 10; // Max range for locations in miles
-let _LOCATIONS = [];
-let _GEOCODER = null;
+let _LOCATIONS = []; // Stores the locations
+let _GEOCODER = null; // will be the google maps geocoder instance
+const LOCATIONS_ENDPOINT = "locations.json";
+const CACHE_TIME = 3000000;
 
 // This function runs when the google script has finished loading
 function initMap() {
   _GEOCODER = new google.maps.Geocoder();
 };
 
-// Async get the locations data in JSON form
-// This will be output by the wordpress backend in the REST api
-(async function() {
-  const locations_resp = await fetch('locations.json')
-    .catch(e => console.log(e));
+/**
+ * Asyncronously get the locations data. 
+ * Allows for localstorage cache on brosers that support it
+ */
+const async_get_locations = async() => {
 
+  // Store the current time in ms
+  const now = Date.now();
+
+  // If local storage exists, then use it to get a cached version of the data
+  if (!!localStorage) {
+    // Check the last time new data was pulled to see if the information should be refreshed
+    const last_refresh = localStorage.getItem("locations_last_pull")
+    if (last_refresh && now - last_refresh < CACHE_TIME) {
+      // Attempts to get the data from the local storage
+      try {
+        const stored_locations = JSON.parse(localStorage.getItem("locations_cached"));
+        if (!!stored_locations && stored_locations.length > 0) {
+          _LOCATIONS = stored_locations;
+          return;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  // asyncronously get the information
+  const locations_resp = await fetch(LOCATIONS_ENDPOINT)
+    .catch(e => console.log(e));
   _LOCATIONS = await locations_resp.json();
-})();
+
+  // Cache the data into the localstorage
+  if (!!localStorage) {
+    localStorage.setItem("locations_last_pull", now);
+    localStorage.setItem("locations_cached", JSON.stringify(_LOCATIONS));
+  }
+}
+
+async_get_locations(localStorage);
 
 /**
  * Gets the geocode of a postcode
@@ -48,6 +81,11 @@ const postCodeLookup = async postcode => new Promise(
  */
 const locationsFiltered = async user_location => new Promise(
   function(resolve, reject) {
+
+    if (!user_location || !user_location.lat || !user_location.lng) {
+      reject('User location is not valid')
+    }
+
     let local_locations = _LOCATIONS.filter(this_location => {
       const distance_to_location = distance(
         user_location.lat(),
